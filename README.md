@@ -46,39 +46,77 @@ src/com/it/
 
 ## 아키텍처
 
-```
-┌─────────────────────────────────────────────────┐
-│                   MainFrame                      │
-│  ┌─────────────┐  ┌──────────────┐              │
-│  │ 고객 모드    │  │ 관리자 모드   │ (비밀번호)    │
-│  └──────┬──────┘  └──────┬───────┘              │
-│         │                │                       │
-│  CustomerPanel      AdminPanel                   │
-│  ┌──────┴──────┐  ┌────┴─────┐                  │
-│  │ MenuPanel   │  │ 메뉴 관리  │                  │
-│  │ CartPanel   │  │ 주문 관리  │                  │
-│  │ OrderDialog │  └──────────┘                  │
-│  └─────────────┘                                 │
-└─────────────────────────────────────────────────┘
+### 컴포넌트 구조
 
-데이터 흐름:
-  MenuData ◄── AdminService (메뉴 CRUD)
-      │
-      ▼
-  MenuPanel ──클릭──▶ OrderDetailDialog ──옵션──▶ CartService.addItem()
-                                                       │
-                                                       ▼
-                                                  CartPanel ◀── CartService
-                                                       │
-                                                   주문하기
-                                                       │
-                                              결제방식 선택 (카드/현금)
-                                                       │
-                                                       ▼
-                                                  OrderService.addOrder()
-                                                       │
-                                                       ▼
-                                              OrderManagePanel (조회)
+```mermaid
+graph TB
+    subgraph MainFrame["MainFrame (JFrame)"]
+        direction LR
+        CM["고객 모드"]
+        AM["관리자 모드<br/>(비밀번호 1234)"]
+    end
+
+    subgraph Customer["CustomerPanel"]
+        MP["MenuPanel<br/>(카드 그리드)"]
+        OD["OrderDetailDialog<br/>(옵션 선택)"]
+        CT["CartPanel<br/>(장바구니)"]
+    end
+
+    subgraph Admin["AdminPanel (JTabbedPane)"]
+        MM["메뉴 관리"]
+        OM["주문 관리<br/>OrderManagePanel"]
+    end
+
+    subgraph Model["Model"]
+        MD["MenuData"]
+        OS["OrderService"]
+        CS["CartService"]
+        AS["AdminService"]
+    end
+
+    MainFrame --> CM
+    MainFrame --> AM
+    CM --> Customer
+    AM --> Admin
+    MP --> OD
+    OD --> CS
+    CT --> CS
+    CT --> OS
+    OM --> OS
+    MP --> MD
+    AS --> MD
+    MM --> AS
+```
+
+### 주문 흐름 (Sequence)
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant MP as MenuPanel
+    participant OD as OrderDetailDialog
+    participant CS as CartService
+    participant CT as CartPanel
+    participant OS as OrderService
+    participant OM as OrderManagePanel
+
+    User->>MP: 상품 카드 클릭
+    MP->>OD: open(item)
+    User->>OD: 사이즈/온도/수량 선택
+    OD->>CS: addItem(item, options, unitPrice)
+    CS->>CT: refresh()
+    User->>CT: 주문하기 클릭
+    CT->>User: 주문 확인 다이얼로그
+    User-->>CT: 확인
+    CT->>User: 결제수단 선택 (카드/현금)
+    User-->>CT: 카드 선택
+    CT->>OS: addOrder(items, total, "카드")
+    CT->>CS: clear()
+    CT->>User: 주문 완료
+    Note over OM,OS: 관리자 모드에서 조회
+    User->>OM: 오늘 매출 + 주문 내역 확인
+    OM->>OS: getTodayOrders()
+    OS-->>OM: 주문 리스트 + 총 매출
 ```
 
 ## 기능
