@@ -3,8 +3,8 @@
   <p>Java Swing (JFrame) 기반 음식 주문 및 매출 관리 키오스크 데스크톱 애플리케이션</p>
 
   <p>
-    <a href="https://openjdk.org"><img src="https://img.shields.io/badge/Java-17+-ED8B00?style=flat-square&logo=openjdk&logoColor=white" /></a>
-    <a href="https://docs.oracle.com/javase/tutorial/uiswing/"><img src="https://img.shields.io/badge/GUI-Java%20Swing%20(JFrame)-5382A1?style=flat-square" /></a>
+    <a href="https://openjdk.org" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Java-17+-ED8B00?style=flat-square&logo=openjdk&logoColor=white" /></a>
+    <a href="https://docs.oracle.com/javase/tutorial/uiswing/" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/GUI-Java%20Swing%20(JFrame)-5382A1?style=flat-square" /></a>
     <img src="https://img.shields.io/badge/Architecture-CardLayout%20%2B%20OOP-3A75B4?style=flat-square" />
     <img src="https://img.shields.io/badge/Course-OOP%20Team%20Project-4CAF50?style=flat-square" />
   </p>
